@@ -1,0 +1,23 @@
+{
+	"name": "Fotos",
+	"admin_email": "inigo.gorosabel@gmail.com",
+	"default_title": "Fotos",
+	"db": {
+		"host": "localhost",
+		"user": "fotos",
+		"pass": "ew193nA%",
+		"name": "fotos",
+		"charset": "utf8mb4",
+		"collate": "utf8mb4_unicode_ci"
+	},
+	"log_level": "ERROR",
+	"base_url": "https://apifotos.osumi.es/",
+	"error_pages": {
+		"404": "/not-found"
+	},
+	"extra": {
+		"thumb": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/thumb",
+		"photo": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/photo"
+	},
+	"environment": "prod"
+}
