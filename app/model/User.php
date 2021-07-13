@@ -52,4 +52,22 @@ class User extends OModel{
 	public function __toString(){
 		return $this->get('name');
 	}
+
+	/**
+	 * Comprueba el inicio de sesión de un usuario
+	 *
+	 * @param string $username Nombre de usuario
+	 *
+	 * @param string $pass Contraseña introducida por el usuario
+	 *
+	 * @return bool Comprobación de contraseña correcta o incorrecta
+	 */
+	public function login(string $username, string $pass): bool {
+		if ($this->find(['username'=>$username])) {
+			if (password_verify($pass, $this->get('pass'))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
