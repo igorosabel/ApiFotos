@@ -41,7 +41,7 @@ class Photo extends OModel {
 	 */
 	public function getThumbUrl(): string {
 		global $core;
-		return $core->getUrl('base').'thumb/'.$this->get('id').'.webp';
+		return $core->config->getUrl('base').'thumb/'.$this->get('id').'.webp';
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Photo extends OModel {
 	 */
 	public function getPhotoUrl(): string {
 		global $core;
-		return $core->getUrl('base').'photo/'.$this->get('id').'.webp';
+		return $core->config->getUrl('base').'photo/'.$this->get('id').'.webp';
 	}
 
 	/**
@@ -61,8 +61,8 @@ class Photo extends OModel {
 	 */
 	public function deleteFull(): void{
 		global $core;
-		$thumb_route  = $core->config->getDir('web').'thumb/'.$this->get('id').'.webp';
-		$photo_route = $core->config->getDir('web').'photo/'.$this->get('id').'.webp';
+		$thumb_route  = $core->config->getExtra('thumb').$this->get('id').'.webp';
+		$photo_route = $core->config->getExtra('photo').$this->get('id').'.webp';
 
 		if (file_exists($thumb_route)) {
 			unlink($thumb_route);

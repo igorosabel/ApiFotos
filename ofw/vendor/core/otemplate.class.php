@@ -319,7 +319,7 @@ class OTemplate {
 		}
 		$this->add($where, $output, array_key_exists('extra', $values) ? $values['extra'] : null);
 	}
-	
+
 	/**
 	 * Add a model object's JSON representation into a substitution key on the template
 	 *

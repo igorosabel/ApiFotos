@@ -18,8 +18,8 @@
 	"extra": {
 		"secret": "0cf2e10d70fa72cdcd2c52678ceb6941c177dde6",
 		"photos_per_page": 30,
-		"thumb": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/thumb",
-		"photo": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/photo"
+		"thumb": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/thumb/",
+		"photo": "/var/www/vhosts/osumi.es/apifotos.osumi.es/web/photo/"
 	},
 	"environment": "prod"
 }

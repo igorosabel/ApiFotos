@@ -8,6 +8,7 @@ use OsumiFramework\OFW\Routing\ORoute;
 use OsumiFramework\App\Service\webService;
 use OsumiFramework\OFW\Plugins\OToken;
 use OsumiFramework\App\Model\User;
+use OsumiFramework\App\Model\Photo;
 
 #[ORoute(
 	type: 'json',
@@ -80,6 +81,7 @@ class api extends OModule {
 		$pass     = $req->getParamString('pass');
 
 		$id = -1;
+		$name = '';
 		$token = '';
 
 		if (is_null($username) || is_null($pass)) {
@@ -90,6 +92,7 @@ class api extends OModule {
 			$user = new User();
 			if ($user->login($username, $pass)) {
 				$id = $user->get('id');
+				$name = $user->get('name');
 
 				$tk = new OToken($this->getConfig()->getExtra('secret'));
 				$tk->addParam('id', $id);
@@ -105,6 +108,61 @@ class api extends OModule {
 		$this->getTemplate()->add('status',   $status);
 		$this->getTemplate()->add('id',       $id);
 		$this->getTemplate()->add('username', $username);
+		$this->getTemplate()->add('name',     $name);
 		$this->getTemplate()->add('token',    $token);
+	}
+
+	/**
+	 * Función para añadir una nueva foto
+	 *
+	 * @param ORequest $req Request object with method, headers, parameters and filters used
+	 * @return void
+	 */
+	#[ORoute('/upload')]
+	public function upload(ORequest $req): void {
+		$status = 'ok';
+		$photo = $req->getParamString('data');
+		$id = $req->getParamInt('id');
+
+		if (is_null($photo) || is_null($id)) {
+			$status = 'error';
+		}
+
+		if ($status == 'ok') {
+			$p = new Photo();
+			$p->set('id_user', $id);
+			$p->save();
+
+			$this->web_service->saveNewImage($photo, $p->get('id'));
+		}
+
+		$this->getTemplate()->add('status', $status);
+	}
+
+	/**
+	 * Función para obtener los datos de una foto
+	 *
+	 * @param ORequest $req Request object with method, headers, parameters and filters used
+	 * @return void
+	 */
+	#[ORoute('/get-photo')]
+	public function getPhoto(ORequest $req): void {
+		$status = 'ok';
+		$id = $req->getParamInt('id');
+		$photo = null;
+
+		if (is_null($id)) {
+			$status = 'error';
+		}
+
+		if ($status == 'ok') {
+			$photo = new Photo();
+			if (!$photo->find(['id' => $id])) {
+				$status = 'error';
+			}
+		}
+
+		$this->getTemplate()->add('status', $status);
+		$this->getTemplate()->addComponent('photo', 'api/photo_item', ['photo' => $photo, 'extra' => 'nourlencode']);
 	}
 }
