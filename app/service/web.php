@@ -157,4 +157,42 @@ class webService extends OService {
 		// Borro la imagen temporal
 		unlink($ruta);
 	}
+
+	/**
+	 * Actualiza una lista de fotos con las tags indicadas
+	 *
+	 * @param array $list Lista de ids de fotos
+	 *
+	 * @param string $tags Lista de tags separadas por comas
+	 *
+	 * @return void
+	 */
+	public function updateTags(array $list, string $tags): void {
+		$photo_tags = [];
+		$db = new ODB();
+
+		$tag_list = explode(',', $tags);
+		foreach ($tag_list as $tag_item) {
+			$tag_item = trim($tag_item);
+			$tag = new Tag();
+
+			$sql = "SELECT * FROM `tag` WHERE `slug` LIKE '%".OTools::slugify($tag_item)."%'";
+			$db->query($sql);
+			if ($res = $db->next()) {
+				$tag->update($res);
+			}
+			else {
+				$tag->set('tag', $tag_item);
+				$tag->set('slug', OTools::slugify($tag_item));
+				$tag->save();
+			}
+			array_push($photo_tags, $tag);
+		}
+
+		foreach  ($list as $item) {
+			$photo = new Photo();
+			$photo->find(['id' => $item]);
+			$photo->updateTags($photo_tags);
+		}
+	}
 }

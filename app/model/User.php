@@ -33,6 +33,12 @@ class User extends OModel{
 				'comment'  => 'Nombre real del usuario',
 				'nullable' => false
 			],
+			'is_admin' => [
+				'type'     => OModel::BOOL,
+				'comment'  => 'Indica si el usuario es un administrador',
+				'nullable' => false,
+				'default'  => false
+			],
 			'created_at' => [
 				'type'    => OModel::CREATED,
 				'comment' => 'Fecha de creación del registro'

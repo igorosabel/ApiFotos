@@ -80,9 +80,10 @@ class api extends OModule {
 		$username = $req->getParamString('username');
 		$pass     = $req->getParamString('pass');
 
-		$id = -1;
-		$name = '';
-		$token = '';
+		$id       = -1;
+		$name     = '';
+		$token    = '';
+		$is_admin = 'false';
 
 		if (is_null($username) || is_null($pass)) {
 			$status = 'error';
@@ -93,6 +94,7 @@ class api extends OModule {
 			if ($user->login($username, $pass)) {
 				$id = $user->get('id');
 				$name = $user->get('name');
+				$is_admin = $user->get('is_admin') ? 'true' : 'false';
 
 				$tk = new OToken($this->getConfig()->getExtra('secret'));
 				$tk->addParam('id', $id);
@@ -110,6 +112,7 @@ class api extends OModule {
 		$this->getTemplate()->add('username', $username);
 		$this->getTemplate()->add('name',     $name);
 		$this->getTemplate()->add('token',    $token);
+		$this->getTemplate()->add('is_admin', $is_admin);
 	}
 
 	/**
@@ -121,19 +124,48 @@ class api extends OModule {
 	#[ORoute('/upload')]
 	public function upload(ORequest $req): void {
 		$status = 'ok';
-		$photo = $req->getParamString('data');
-		$id = $req->getParamInt('id');
+		$photo = $req->getParam('data');
+		$id_user = $req->getParamInt('id');
 
-		if (is_null($photo) || is_null($id)) {
+		$id = null;
+
+		if (is_null($photo) || is_null($id_user)) {
 			$status = 'error';
 		}
 
 		if ($status == 'ok') {
 			$p = new Photo();
-			$p->set('id_user', $id);
+			$p->set('id_user', $id_user);
+			$p->set('when', $photo['date']);
 			$p->save();
 
-			$this->web_service->saveNewImage($photo, $p->get('id'));
+			$id = $p->get('id');
+
+			$this->web_service->saveNewImage($photo['src'], $id);
+		}
+
+		$this->getTemplate()->add('status', $status);
+		$this->getTemplate()->add('id', $id);
+	}
+
+	/**
+	 * Función para actualizar las etiquetas de una serie de fotos
+	 *
+	 * @param ORequest $req Request object with method, headers, parameters and filters used
+	 * @return void
+	 */
+	#[ORoute('/update-tags')]
+	public function updateTags(ORequest $req): void {
+		$status = 'ok';
+		$list = $req->getParam('list');
+		$tags = $req->getParamString('tags');
+
+		if (is_null($list) || is_null($tags)) {
+			$status = 'error';
+		}
+
+		if ($status == 'ok') {
+			$this->web_service->updateTags($list, $tags);
 		}
 
 		$this->getTemplate()->add('status', $status);

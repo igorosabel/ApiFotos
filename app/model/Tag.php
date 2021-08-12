@@ -21,6 +21,12 @@ class Tag extends OModel {
 				'comment'  => 'Texto de la tag',
 				'nullable' => false
 			],
+			'slug' => [
+				'type'     => OModel::TEXT,
+				'size'     => 50,
+				'comment'  => 'Slug del texto de la tag',
+				'nullable' => false
+			],
 			'created_at' => [
 				'type'    => OModel::CREATED,
 				'comment' => 'Fecha de creación del registro'

@@ -5,6 +5,7 @@ null
 		"id": <?php echo $values['photo']->get('id') ?>,
 		"thumb": "<?php echo $values['photo']->getThumbUrl() ?>",
 		"img": "<?php echo $values['photo']->getPhotoUrl() ?>",
+		"date": <?php echo strtotime($values['photo']->get('when', 'd/m/Y h:i:s')) ?>,
 		"tags": [
 		<?php foreach ($values['photo']->getTags() as $j => $tag): ?>
 			{

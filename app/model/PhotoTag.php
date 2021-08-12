@@ -13,11 +13,13 @@ class PhotoTag extends OModel{
 		$model = [
 			'id_photo' => [
 				'type'    => OModel::PK,
-				'comment' => 'Id de la foto'
+				'comment' => 'Id de la foto',
+				'incr' => false
 			],
 			'id_tag' => [
 				'type'    => OModel::PK,
-				'comment' => 'Id de la tag'
+				'comment' => 'Id de la tag',
+				'incr' => false
 			],
 			'created_at' => [
 				'type'    => OModel::CREATED,

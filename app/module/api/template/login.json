@@ -4,6 +4,7 @@
 		"id": {{id}},
 		"username": "{{username}}",
 		"name": "{{name}}",
-		"token": "{{token}}"
+		"token": "{{token}}",
+		"isAdmin": {{is_admin}}
 	}
 }

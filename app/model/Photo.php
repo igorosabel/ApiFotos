@@ -21,6 +21,11 @@ class Photo extends OModel {
 				'nullable' => false,
 				'ref'      => 'user.id'
 			],
+			'when' => [
+				'type'     => OModel::DATE,
+				'comment'  => 'Fecha de la foto',
+				'nullable' => false
+			],
 			'created_at' => [
 				'type'    => OModel::CREATED,
 				'comment' => 'Fecha de creación del registro'
@@ -117,5 +122,24 @@ class Photo extends OModel {
 		}
 
 		$this->setTags($list);
+	}
+
+	/**
+	 * Función para actualizar las tags de una foto
+	 *
+	 * @param array $tags Tags de la foto
+	 *
+	 * @return void
+	 */
+	public function updateTags(array $tags): void {
+		$sql = "DELETE FROM `photo_tag` WHERE `id_photo` = ?";
+		$this->db->query($sql, [$this->get('id')]);
+
+		foreach  ($tags as $tag) {
+			$photo_tag = new PhotoTag();
+			$photo_tag->set('id_photo', $this->get('id'));
+			$photo_tag->set('id_tag', $tag->get('id'));
+			$photo_tag->save();
+		}
 	}
 }

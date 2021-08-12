@@ -10,7 +10,7 @@
 		"charset": "utf8mb4",
 		"collate": "utf8mb4_unicode_ci"
 	},
-	"log_level": "ERROR",
+	"log_level": "ALL",
 	"base_url": "https://apifotos.osumi.es/",
 	"error_pages": {
 		"404": "/not-found"
