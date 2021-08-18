@@ -26,6 +26,11 @@ class Photo extends OModel {
 				'comment'  => 'Fecha de la foto',
 				'nullable' => false
 			],
+			'exif' => [
+				'type'     => OModel::LONGTEXT,
+				'comment'  => 'Datos EXIF de la foto',
+				'nullable' => true
+			],
 			'created_at' => [
 				'type'    => OModel::CREATED,
 				'comment' => 'Fecha de creación del registro'
@@ -60,14 +65,33 @@ class Photo extends OModel {
 	}
 
 	/**
+	 * Obtiene la ruta al archivo físico del thumbnail
+	 *
+	 * @return string Ruta al archivo del thumbnail
+	 */
+	public function getThumbRoute(): string {
+		global $core;
+		return $core->config->getExtra('thumb').$this->get('id').'.webp';
+	}
+
+	/**
+	 * Obtiene la ruta al archivo físico de la foto
+	 *
+	 * @return string Ruta al archivo de la foto
+	 */
+	public function getPhotoRoute(): string {
+		global $core;
+		return $core->config->getExtra('photo').$this->get('id').'.webp';
+	}
+
+	/**
 	 * Borra una foto de la base de datos, su thumbnail y la foto
 	 *
 	 * @return void
 	 */
 	public function deleteFull(): void{
-		global $core;
-		$thumb_route  = $core->config->getExtra('thumb').$this->get('id').'.webp';
-		$photo_route = $core->config->getExtra('photo').$this->get('id').'.webp';
+		$thumb_route  = $this->getThumbRoute();
+		$photo_route  = $this->getPhotoRoute();
 
 		if (file_exists($thumb_route)) {
 			unlink($thumb_route);

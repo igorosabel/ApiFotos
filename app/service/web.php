@@ -29,7 +29,7 @@ class webService extends OService {
 		$db = new ODB();
 		$lim = ($page - 1) * $this->getConfig()->getExtra('photos_per_page');
 
-		$sql = "SELECT * FROM `photo` ORDER BY `updated_at` DESC LIMIT ".$lim.",".$this->getConfig()->getExtra('photos_per_page');
+		$sql = "SELECT * FROM `photo` ORDER BY `when` DESC LIMIT ".$lim.",".$this->getConfig()->getExtra('photos_per_page');
 		$db->query($sql);
 		$ret = [];
 
@@ -193,6 +193,37 @@ class webService extends OService {
 			$photo = new Photo();
 			$photo->find(['id' => $item]);
 			$photo->updateTags($photo_tags);
+		}
+	}
+
+	/**
+	 * Rota una imagen de modo que su orientación quede correcta
+	 *
+	 * @param Photo $p Foto a rotar
+	 *
+	 * @param int $orientation Valor EXIF del campo Orientation para saber en que sentido debe rotarse
+	 *
+	 * @return void
+	 */
+	public function rotateImage(Photo $p, int $orientation): void {
+		$thumb = new OImage();
+		$thumb->load( $p->getThumbRoute() );
+		$photo = new OImage();
+		$photo->load( $p->getPhotoRoute() );
+
+		// Orientation 6 -> Rotar 270
+		if ($orientation == 6) {
+			$thumb->rotate(270);
+			$thumb->save($p->getThumbRoute(), $thumb->getImageType());
+			$photo->rotate(270);
+			$photo->save($p->getPhotoRoute(), $photo->getImageType());
+		}
+		// Orientation 3 -> Rotar 180
+		if ($orientation == 3) {
+			$thumb->rotate(180);
+			$thumb->save($p->getThumbRoute(), $thumb->getImageType());
+			$photo->rotate(180);
+			$photo->save($p->getPhotoRoute(), $photo->getImageType());
 		}
 	}
 }

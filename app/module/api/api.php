@@ -134,14 +134,24 @@ class api extends OModule {
 		}
 
 		if ($status == 'ok') {
+			$this->getLog()->info(var_export($photo['date'], true));
+			$this->getLog()->info(var_export($photo['exif'], true));
 			$p = new Photo();
 			$p->set('id_user', $id_user);
 			$p->set('when', $photo['date']);
+			$p->set('exif', $photo['exif']);
 			$p->save();
 
 			$id = $p->get('id');
 
 			$this->web_service->saveNewImage($photo['src'], $id);
+
+			if ( $photo['exif'] != '' ) {
+				$exif_data = json_decode($photo['exif'], true);
+				if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] != 1) {
+					$this->web_service->rotateImage($p, $exif_data['Orientation']);
+				}
+			}
 		}
 
 		$this->getTemplate()->add('status', $status);

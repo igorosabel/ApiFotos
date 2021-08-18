@@ -502,3 +502,11 @@ msgstr "Por ejemplo"
 msgid "OFW_WRONG_OPTION"
 msgstr "La opción "%s" no es correcta."
 
+msgid "PLUGIN_IMAGE_FILE_NOT_FOUND"
+msgstr "Archivo "%s" no encontrado."
+
+msgid "PLUGIN_IMAGE_LOAD_ERROR"
+msgstr "La imagen indicada no pudo ser cargada."
+
+msgid "PLUGIN_IMAGE_FILE_LOADED"
+msgstr "Todavía no se ha cargado ninguna imagen."
