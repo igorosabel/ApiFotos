@@ -76,4 +76,20 @@ class User extends OModel{
 		}
 		return false;
 	}
+
+	/**
+	 * Busca el usuario indicado y comprueba si es un admin
+	 *
+	 * @param int $id_user Id del usuario a comprobar
+	 *
+	 * @return bool Devuelve si el usuario es admin o no
+	 */
+	public function checkAdmin(int $id_user): bool {
+		if ($this->find(['id' => $id_user])) {
+			if ($this->get('is_admin')) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

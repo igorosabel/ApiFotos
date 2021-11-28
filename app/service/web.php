@@ -7,6 +7,7 @@ use OsumiFramework\OFW\DB\ODB;
 use OsumiFramework\OFW\Tools\OTools;
 use OsumiFramework\App\Model\Photo;
 use OsumiFramework\App\Model\Tag;
+use OsumiFramework\App\Model\User;
 use OsumiFramework\OFW\Plugins\OImage;
 
 class webService extends OService {
@@ -225,5 +226,26 @@ class webService extends OService {
 			$photo->rotate(180);
 			$photo->save($p->getPhotoRoute(), $photo->getImageType());
 		}
+	}
+
+	/**
+	 * Obtiene la lista de usuarios
+	 *
+	 * @return array Lista de usuarios
+	 */
+	public function getUserList(): array {
+		$db = new ODB();
+		$list = [];
+
+		$sql = "SELECT * FROM `user` ORDER BY `id`";
+		$db->query($sql);
+
+		while ($res = $db->next()) {
+			$user = new User();
+			$user->update($res);
+			array_push($list, $user);
+		}
+
+		return $list;
 	}
 }

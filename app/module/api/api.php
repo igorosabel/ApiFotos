@@ -9,6 +9,7 @@ use OsumiFramework\App\Service\webService;
 use OsumiFramework\OFW\Plugins\OToken;
 use OsumiFramework\App\Model\User;
 use OsumiFramework\App\Model\Photo;
+use OsumiFramework\App\DTO\UserSaveDTO;
 
 #[ORoute(
 	type: 'json',
@@ -27,7 +28,10 @@ class api extends OModule {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	#[ORoute('/get-photos')]
+	#[ORoute(
+		'/get-photos',
+		filter: 'loginFilter'
+	)]
 	public function getPhotos(ORequest $req): void {
 		$status = 'ok';
 		$page = $req->getParamint('page');
@@ -55,7 +59,10 @@ class api extends OModule {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	#[ORoute('/get-tags')]
+	#[ORoute(
+		'/get-tags',
+		filter: 'loginFilter'
+	)]
 	public function getTags(ORequest $req): void {
 		$status = 'ok';
 		$list = [];
@@ -121,36 +128,46 @@ class api extends OModule {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	#[ORoute('/upload')]
+	#[ORoute(
+		'/upload',
+		filter: 'loginFilter'
+	)]
 	public function upload(ORequest $req): void {
 		$status = 'ok';
 		$photo = $req->getParam('data');
 		$id_user = $req->getParamInt('id');
+		$filter = $req->getFilter('loginFilter');
 
 		$id = null;
 
-		if (is_null($photo) || is_null($id_user)) {
+		if (is_null($photo) || is_null($id_user) || $filter['status'] == 'error') {
 			$status = 'error';
 		}
 
 		if ($status == 'ok') {
-			$this->getLog()->info(var_export($photo['date'], true));
-			$this->getLog()->info(var_export($photo['exif'], true));
-			$p = new Photo();
-			$p->set('id_user', $id_user);
-			$p->set('when', $photo['date']);
-			$p->set('exif', $photo['exif']);
-			$p->save();
+			$user = new User();
+			if ($user->checkAdmin($filter['id'])) {
+				$this->getLog()->info(var_export($photo['date'], true));
+				$this->getLog()->info(var_export($photo['exif'], true));
+				$p = new Photo();
+				$p->set('id_user', $id_user);
+				$p->set('when', $photo['date']);
+				$p->set('exif', $photo['exif']);
+				$p->save();
 
-			$id = $p->get('id');
+				$id = $p->get('id');
 
-			$this->web_service->saveNewImage($photo['src'], $id);
+				$this->web_service->saveNewImage($photo['src'], $id);
 
-			if ( $photo['exif'] != '' ) {
-				$exif_data = json_decode($photo['exif'], true);
-				if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] != 1) {
-					$this->web_service->rotateImage($p, $exif_data['Orientation']);
+				if ( $photo['exif'] != '' ) {
+					$exif_data = json_decode($photo['exif'], true);
+					if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] != 1) {
+						$this->web_service->rotateImage($p, $exif_data['Orientation']);
+					}
 				}
+			}
+			else {
+				$status =  'error';
 			}
 		}
 
@@ -164,7 +181,10 @@ class api extends OModule {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	#[ORoute('/update-tags')]
+	#[ORoute(
+		'/update-tags',
+		filter: 'loginFilter'
+	)]
 	public function updateTags(ORequest $req): void {
 		$status = 'ok';
 		$list = $req->getParam('list');
@@ -187,7 +207,10 @@ class api extends OModule {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	#[ORoute('/get-photo')]
+	#[ORoute(
+		'/get-photo',
+		filter: 'loginFilter'
+	)]
 	public function getPhoto(ORequest $req): void {
 		$status = 'ok';
 		$id = $req->getParamInt('id');
@@ -206,5 +229,77 @@ class api extends OModule {
 
 		$this->getTemplate()->add('status', $status);
 		$this->getTemplate()->addComponent('photo', 'api/photo_item', ['photo' => $photo, 'extra' => 'nourlencode']);
+	}
+
+	/**
+	 * Función para obtener el listado de usuario
+	 *
+	 * @param ORequest $req Request object with method, headers, parameters and filters used
+	 * @return void
+	 */
+	#[ORoute(
+		'/get-users',
+		filter: 'loginFilter'
+	)]
+	public function getUsers(ORequest $req): void {
+		$status = 'ok';
+		$filter = $req->getFilter('loginFilter');
+		$list = [];
+
+		if ($filter['status'] == 'error') {
+			$status = 'error';
+		}
+
+		if ($status ==  'ok') {
+			$user = new User();
+			if ($user->checkAdmin($filter['id'])) {
+				$list = $this->web_service->getUserList();
+			}
+			else {
+				$status = 'error';
+			}
+		}
+
+		$this->getTemplate()->add('status', $status);
+		$this->getTemplate()->addComponent('list', 'api/user_list', ['list' => $list, 'extra' => 'nourlencode']);
+	}
+
+	/**
+	 * Función para guardar un usuario
+	 *
+	 * @param UserSaveDTO $data Datos del usuario a guardar
+	 * @return void
+	 */
+	#[ORoute(
+		'/save-user',
+		filter: 'loginFilter'
+	)]
+	public function saveUser(UserSaveDTO $data): void {
+		$status = 'ok';
+		if (!$data->isValid()) {
+			$status = 'error';
+		}
+		
+		if ($status == 'ok') {
+			$user = new User();
+			if ($user->checkAdmin($data->getIdToken())) {
+				$u = new User();
+				if ($data->getId() != -1) {
+					$u->find(['id' => $data->getId()]);
+				}
+				$u->set('username', $data->getUsername());
+				$u->set('name', $data->getName());
+				$u->set('is_admin', $data->getIsAdmin());
+				if ($data->getPass() != '') {
+					$u->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
+				}
+				$u->save();
+			}
+			else {
+				$status = 'error';
+			}
+		}
+
+		$this->getTemplate()->add('status', $status);
 	}
 }
