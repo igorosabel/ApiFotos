@@ -24,7 +24,7 @@ class uploadAction extends OAction {
 		$status = 'ok';
 		$photo = $req->getParam('data');
 		$id_user = $req->getParamInt('id');
-		$filter = $req->getFilter('loginFilter');
+		$filter = $req->getFilter('login');
 
 		$id = null;
 
@@ -47,7 +47,7 @@ class uploadAction extends OAction {
 
 				$this->web_service->saveNewImage($photo['src'], $id);
 
-				if ( $photo['exif'] != '' ) {
+				if ( $photo['exif'] != '' && $photo['exif'] != 'false') {
 					$exif_data = json_decode($photo['exif'], true);
 					if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] != 1) {
 						$this->web_service->rotateImage($p, $exif_data['Orientation']);

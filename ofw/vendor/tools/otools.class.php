@@ -141,6 +141,62 @@ class OTools {
 	}
 
 	/**
+	 * Function to load a component and it's dependencies
+	 *
+	 * @param string $item Name or full path to the component
+	 *
+	 * @return void
+	 */
+	public static function loadComponents(string $item): void {
+		global $core;
+		$file = $item;
+
+		if (stripos($item, ',') !== false) {
+			$items = explode(',', $item);
+			foreach ($items as $new_item) {
+				self::loadComponents(trim($new_item));
+			}
+		}
+		else {
+			// Check if component is in a sub-folder
+			if (stripos($item, '/') !== false) {
+				$data = explode('/', $item);
+				$file = array_pop($data);
+			}
+
+			$component_path = $core->config->getDir('app_component').$item.'/'.$file.'.component.php';
+			if (file_exists($component_path)) {
+				require_once $component_path;
+
+				// Check if component has dependencies
+				$component_content = file_get_contents($component_path);
+				if (preg_match('/^\s+private string \$depends = \'(.*?)\';$/m', $component_content, $matches) == 1) {
+					$dependecies = explode(',', $matches[1]);
+					foreach ($dependecies as $dependency) {
+						$dependency = trim($dependency);
+						self::loadComponents($dependency);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to load a service file
+	 *
+	 * @param string $item Name of the service file
+	 *
+	 * @return void
+	 */
+	public static function loadService(string $item): void {
+		global $core;
+		$service_path = $core->config->getDir('app_service').$item.'.service.php';
+		if (file_exists($service_path)) {
+			require_once $service_path;
+		}
+	}
+
+	/**
 	 * Get a files content as a Base64 string
 	 *
 	 * @param string $filename Route of the filename to be loaded
@@ -274,6 +330,7 @@ class OTools {
 
 		if ($mode=='403') { header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden'); }
 		if ($mode=='404') { header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found'); }
+		if ($mode=='500') { header($_SERVER['SERVER_PROTOCOL'].' 500 Internal Server Error'); }
 
 		echo self::getPartial($path, $params);
 		exit;
@@ -871,7 +928,9 @@ class OTools {
 		$list_component_content = "<"."?php declare(strict_types=1);\n\n";
 		$list_component_content .= "namespace OsumiFramework\App\Component;\n\n";
 		$list_component_content .= "use OsumiFramework\OFW\Core\OComponent;\n\n";
-		$list_component_content .= "class ".$values['list_name']." extends OComponent {}";
+		$list_component_content .= "class ".$values['list_name']." extends OComponent {\n";
+		$list_component_content .= "	private string $"."depends = 'model/".strtolower($values['model_name'])."';\n";
+		$list_component_content .= "}";
 
 		$list_template_content = "<"."?php\n";
 		$list_template_content .= "use OsumiFramework\\App\\Component\\".$component_name.";\n\n";
@@ -1125,6 +1184,27 @@ class OTools {
 		$version = json_decode( file_get_contents($version_file), true );
 		$current_version = $version['version'];
 		return $version['updates'][$current_version]['message'];
+	}
+
+	/**
+	 * Get user's IP address
+	 *
+	 * @return string User's IP address
+	 */
+	public static function getIPAddress(): string {
+		// Whether ip is from the share internet
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+			$ip = $_SERVER['HTTP_CLIENT_IP'];
+		}
+		// Whether ip is from the proxy
+		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+		// Whether ip is from the remote address
+		else {
+			$ip = $_SERVER['REMOTE_ADDR'];
+		}
+		return $ip;
 	}
 
 	/**

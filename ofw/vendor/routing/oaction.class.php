@@ -10,6 +10,7 @@ use OsumiFramework\OFW\Log\OLog;
 use OsumiFramework\OFW\Web\OSession;
 use OsumiFramework\OFW\Web\OCookie;
 use OsumiFramework\OFW\Cache\OCacheContainer;
+use OsumiFramework\OFW\Tools\OTools;
 
 /**
  * OAction - Base class for the module actions providing access to the framework configuration, database, template, logs, session or cookies
@@ -61,10 +62,7 @@ class OAction {
 
 		// Load action's required services and components
 		foreach ($this->attributes->getServiceList() as $item) {
-			$service_path = $this->config->getDir('app_service').$item.'.service.php';
-			if (file_exists($service_path)) {
-				require_once $service_path;
-			}
+			OTools::loadService($item);
 			$service_name = "\\OsumiFramework\\App\\Service\\".$item.'Service';
 			$service = new $service_name;
 			$service->loadService();
@@ -72,7 +70,7 @@ class OAction {
 		}
 
 		foreach ($this->attributes->getComponentList() as $item) {
-			$this->loadComponent($item);
+			OTools::loadComponents($item);
 		}
 
 		// Load action's CSS and JS files
@@ -92,34 +90,6 @@ class OAction {
 
 		foreach ($this->attributes->getJsList() as $item) {
 			$this->template->addJs($item);
-		}
-	}
-
-	/**
-	 * Function to load a component and it's dependencies
-	 */
-	private function loadComponent(string $item): void {
-		$file = $item;
-
-		// Check if component is in a sub-folder
-		if (stripos($item, '/') !== false) {
-			$data = explode('/', $item);
-			$file = array_pop($data);
-		}
-
-		$component_path = $this->config->getDir('app_component').$item.'/'.$file.'.component.php';
-		if (file_exists($component_path)) {
-			require_once $component_path;
-
-			// Check if component has dependencies
-			$component_content = file_get_contents($component_path);
-			if (preg_match('/^\s+private string \$depends = \'(.*?)\';$/m', $component_content, $matches) == 1) {
-				$dependecies = explode(',', $matches[1]);
-				foreach ($dependecies as $dependency) {
-					$dependency = trim($dependency);
-					$this->loadComponent($dependency);
-				}
-			}
 		}
 	}
 

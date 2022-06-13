@@ -18,7 +18,7 @@ class OImage {
 		$this->error_messages = [
 			'FILE_NOT_FOUND'  => OTools::getMessage('PLUGIN_IMAGE_FILE_NOT_FOUND'),
 			'LOAD_ERROR'      => OTools::getMessage('PLUGIN_IMAGE_LOAD_ERROR'),
-			'FILE_NOT_LOADED' => OTools::getMessage('PLUGIN_IMAGE_FILE_LOADED')
+			'FILE_NOT_LOADED' => OTools::getMessage('PLUGIN_IMAGE_FILE_NOT_LOADED')
 		];
 	}
 
