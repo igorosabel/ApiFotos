@@ -1,8 +1,20 @@
 {
 	"file_name": "OImage.php",
-	"version": "2.1.0",
+	"version": "2.3.0",
 	"description": "Clase para manipular imágenes (redimensionar, cambiar de formato, crear nuevas...).",
 	"updates": {
+		"2.3.0": {
+			"message": "2.3.0 - Mejor control de errores y función para rotar imágenes (requiere OFW 8.0.1)",
+			"files": [
+				"OImage.php"
+			]
+		},
+		"2.2.0": {
+			"message": "2.2.0 - Funciones auxiliares para trabajar con imagenes en Base64",
+			"files": [
+				"OImage.php"
+			]
+		},
 		"2.1.0": {
 			"message": "2.1.0 - Añado soporte para WebP",
 			"files": [
