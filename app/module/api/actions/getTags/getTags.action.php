@@ -10,8 +10,8 @@ use OsumiFramework\App\Component\TagListComponent;
 #[OModuleAction(
 	url: '/get-tags',
 	filter: 'login',
-	services: 'web',
-	components: 'api/tag_list'
+	services: ['web'],
+	components: ['api/tag_list']
 )]
 class getTagsAction extends OAction {
 	/**
@@ -22,11 +22,11 @@ class getTagsAction extends OAction {
 	 */
 	public function run(ORequest $req):void {
 		$status = 'ok';
-		$tag_list_component = new TagListComponent(['list' => [], 'extra' => 'nourlencode']);
+		$tag_list_component = new TagListComponent(['list' => []]);
 
 		if ($status=='ok') {
 			$list = $this->web_service->getTagList();
-			$tag_list_component = new TagListComponent(['list' => $list, 'extra' => 'nourlencode']);
+			$tag_list_component->setValue('list', $list);
 		}
 
 		$this->getTemplate()->add('status', $status);

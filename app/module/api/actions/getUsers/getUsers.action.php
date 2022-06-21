@@ -11,8 +11,8 @@ use OsumiFramework\App\Component\UserListComponent;
 #[OModuleAction(
 	url: '/get-users',
 	filter: 'login',
-	services: 'web',
-	components: 'api/user_list'
+	services: ['web'],
+	components: ['api/user_list']
 )]
 class getUsersAction extends OAction {
 	/**
@@ -24,7 +24,7 @@ class getUsersAction extends OAction {
 	public function run(ORequest $req):void {
 		$status = 'ok';
 		$filter = $req->getFilter('login');
-		$user_list_component = new UserListComponent(['list' => [], 'extra' => 'nourlencode']);
+		$user_list_component = new UserListComponent(['list' => []]);
 
 		if ($filter['status'] == 'error') {
 			$status = 'error';
@@ -34,7 +34,7 @@ class getUsersAction extends OAction {
 			$user = new User();
 			if ($user->checkAdmin($filter['id'])) {
 				$list = $this->web_service->getUserList();
-				$user_list_component = new UserListComponent(['list' => $list, 'extra' => 'nourlencode']);
+				$user_list_component->setValue('list', $list);
 			}
 			else {
 				$status = 'error';

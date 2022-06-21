@@ -60,8 +60,8 @@ class OAction {
 		$this->template->setType($url_result['type']);
 		$this->template->loadLayout($url_result['layout']);
 
-		// Load action's required services and components
-		foreach ($this->attributes->getServiceList() as $item) {
+		// Load action's required services
+		foreach ($this->attributes->getServices() as $item) {
 			OTools::loadService($item);
 			$service_name = "\\OsumiFramework\\App\\Service\\".$item.'Service';
 			$service = new $service_name;
@@ -69,26 +69,25 @@ class OAction {
 			$this->{$item.'_service'} = $service;
 		}
 
-		foreach ($this->attributes->getComponentList() as $item) {
-			OTools::loadComponents($item);
-		}
+		// Load action's required components
+		OTools::loadComponents($this->attributes->getComponents());
 
 		// Load action's CSS and JS files
-		foreach ($this->attributes->getInlineCssList() as $item) {
+		foreach ($this->attributes->getInlineCss() as $item) {
 			$css_file = $this->config->getDir('app_module').$url_result['module'].'/actions/'.$url_result['action'].'/'.$item.'.css';
 			$this->template->addCss($css_file, true);
 		}
 
-		foreach ($this->attributes->getCssList() as $item) {
+		foreach ($this->attributes->getCss() as $item) {
 			$this->template->addCss($item);
 		}
 
-		foreach ($this->attributes->getInlineJsList() as $item) {
+		foreach ($this->attributes->getInlineJs() as $item) {
 			$js_file = $this->config->getDir('app_module').$url_result['module'].'/actions/'.$url_result['action'].'/'.$item.'.js';
 			$this->template->addJs($js_file, true);
 		}
 
-		foreach ($this->attributes->getJsList() as $item) {
+		foreach ($this->attributes->getJs() as $item) {
 			$this->template->addJs($item);
 		}
 	}

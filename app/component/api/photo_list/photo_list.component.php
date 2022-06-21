@@ -5,5 +5,5 @@ namespace OsumiFramework\App\Component;
 use OsumiFramework\OFW\Core\OComponent;
 
 class PhotoListComponent extends OComponent {
-  private string $depends = 'api/photo_item';
+  public array $depends = ['api/photo_item'];
 }

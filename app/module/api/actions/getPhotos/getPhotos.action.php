@@ -10,8 +10,8 @@ use OsumiFramework\App\Component\PhotoListComponent;
 #[OModuleAction(
 	url: '/get-photos',
 	filter: 'login',
-	services: 'web',
-	components: 'api/photo_list'
+	services: ['web'],
+	components: ['api/photo_list']
 )]
 class getPhotosAction extends OAction {
 	/**
@@ -24,7 +24,7 @@ class getPhotosAction extends OAction {
 		$status = 'ok';
 		$page = $req->getParamInt('page');
 		$pages = 0;
-		$photo_list_component = new PhotoListComponent(['list' => [], 'extra' => 'nourlencode']);
+		$photo_list_component = new PhotoListComponent(['list' => []]);
 
 		if (is_null($page)) {
 			$status = 'error';
@@ -33,7 +33,7 @@ class getPhotosAction extends OAction {
 		if ($status=='ok') {
 			$list = $this->web_service->getPhotosList($page);
 			$pages = $this->web_service->getPhotosNumPages();
-			$photo_list_component = new PhotoListComponent(['list' => $list, 'extra' => 'nourlencode']);
+			$photo_list_component->setValue('list', $list);
 		}
 
 		$this->getTemplate()->add('status', $status);

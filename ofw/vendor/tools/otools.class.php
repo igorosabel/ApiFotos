@@ -141,43 +141,38 @@ class OTools {
 	}
 
 	/**
+	 * Function to load a list of components and their dependencies
+	 *
+	 * @param array $items List of names or full paths to the components
+	 *
+	 * @return void
+	 */
+	public static function loadComponents(array $items): void {
+		foreach ($items as $new_item) {
+			self::loadComponent(trim($new_item));
+		}
+	}
+
+	/**
 	 * Function to load a component and it's dependencies
 	 *
 	 * @param string $item Name or full path to the component
 	 *
 	 * @return void
 	 */
-	public static function loadComponents(string $item): void {
+	public static function loadComponent(string $item): void {
 		global $core;
 		$file = $item;
 
-		if (stripos($item, ',') !== false) {
-			$items = explode(',', $item);
-			foreach ($items as $new_item) {
-				self::loadComponents(trim($new_item));
-			}
+		// Check if component is in a sub-folder
+		if (stripos($item, '/') !== false) {
+			$data = explode('/', $item);
+			$file = array_pop($data);
 		}
-		else {
-			// Check if component is in a sub-folder
-			if (stripos($item, '/') !== false) {
-				$data = explode('/', $item);
-				$file = array_pop($data);
-			}
 
-			$component_path = $core->config->getDir('app_component').$item.'/'.$file.'.component.php';
-			if (file_exists($component_path)) {
-				require_once $component_path;
-
-				// Check if component has dependencies
-				$component_content = file_get_contents($component_path);
-				if (preg_match('/^\s+private string \$depends = \'(.*?)\';$/m', $component_content, $matches) == 1) {
-					$dependecies = explode(',', $matches[1]);
-					foreach ($dependecies as $dependency) {
-						$dependency = trim($dependency);
-						self::loadComponents($dependency);
-					}
-				}
-			}
+		$component_path = $core->config->getDir('app_component').$item.'/'.$file.'.component.php';
+		if (file_exists($component_path)) {
+			require_once $component_path;
 		}
 	}
 

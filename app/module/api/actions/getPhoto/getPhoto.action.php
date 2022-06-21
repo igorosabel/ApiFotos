@@ -11,7 +11,7 @@ use OsumiFramework\App\Component\PhotoItemComponent;
 #[OModuleAction(
 	url: '/get-photo',
 	filter: 'login',
-	components: 'api/photo_item'
+	components: ['api/photo_item']
 )]
 class getPhotoAction extends OAction {
 	/**
@@ -23,7 +23,7 @@ class getPhotoAction extends OAction {
 	public function run(ORequest $req):void {
 		$status = 'ok';
 		$id = $req->getParamInt('id');
-		$photo_item_component = new PhotoItemComponent(['photo' => null, 'extra' => 'nourlencode']);
+		$photo_item_component = new PhotoItemComponent(['photo' => null]);
 
 		if (is_null($id)) {
 			$status = 'error';
@@ -32,7 +32,7 @@ class getPhotoAction extends OAction {
 		if ($status == 'ok') {
 			$photo = new Photo();
 			if ($photo->find(['id' => $id])) {
-				$photo_item_component = new PhotoItemComponent(['photo' => $photo, 'extra' => 'nourlencode']);
+				$photo_item_component->setValue('photo', $photo);
 			}
 			else {
 				$status = 'error';
