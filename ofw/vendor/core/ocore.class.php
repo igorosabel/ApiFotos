@@ -236,7 +236,7 @@ class OCore {
 				$module = new $module_name;
 				$module_attributes = OTools::getClassAttributes($module);
 
-				if (in_array($url_result['action'], $module_attributes->getActionList())) {
+				if (in_array($url_result['action'], $module_attributes->getActions())) {
 					$action_path = $this->config->getDir('app_module').$url_result['module'].'/actions/'.$url_result['action'].'/'.$url_result['action'].'.action.php';
 					if (file_exists($action_path)) {
 						require_once $action_path;
@@ -288,7 +288,7 @@ class OCore {
 			$params['message'] = "<strong>Error:</strong> \"".$ex->getMessage()."\"\n<strong>File:</strong> \"".$ex->getFile()."\" (Line: ".$ex->getLine().")\n\n<strong>Trace:</strong> \n";
 			foreach ($ex->getTrace() as $trace) {
 				if (array_key_exists('file', $trace)) {
-					$params['message'] .= "  <strong>File:</strong> \"".$trace['file']."\"\n";
+					$params['message'] .= "  <strong>File:</strong> \"".$trace['file']." (Line: ".$trace['line'].")\"\n";
 				}
 				if (array_key_exists('class', $trace)) {
 					$params['message'] .= "  <strong>Class:</strong> \"".$trace['class']."\"\n";
