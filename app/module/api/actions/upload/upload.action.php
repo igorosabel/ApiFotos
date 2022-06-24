@@ -10,7 +10,7 @@ use OsumiFramework\App\Model\Photo;
 
 #[OModuleAction(
 	url: '/upload',
-	filter: 'login',
+	filters: ['login'],
 	services: ['web']
 )]
 class uploadAction extends OAction {

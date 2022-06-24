@@ -10,7 +10,7 @@ use OsumiFramework\App\Component\PhotoItemComponent;
 
 #[OModuleAction(
 	url: '/get-photo',
-	filter: 'login',
+	filters: ['login'],
 	components: ['api/photo_item']
 )]
 class getPhotoAction extends OAction {

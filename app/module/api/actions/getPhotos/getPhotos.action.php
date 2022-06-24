@@ -9,7 +9,7 @@ use OsumiFramework\App\Component\PhotoListComponent;
 
 #[OModuleAction(
 	url: '/get-photos',
-	filter: 'login',
+	filters: ['login'],
 	services: ['web'],
 	components: ['api/photo_list']
 )]

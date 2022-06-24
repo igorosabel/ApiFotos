@@ -10,7 +10,7 @@ use OsumiFramework\App\Component\UserListComponent;
 
 #[OModuleAction(
 	url: '/get-users',
-	filter: 'login',
+	filters: ['login'],
 	services: ['web'],
 	components: ['api/user_list']
 )]
