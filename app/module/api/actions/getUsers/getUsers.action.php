@@ -6,13 +6,12 @@ use OsumiFramework\OFW\Routing\OModuleAction;
 use OsumiFramework\OFW\Routing\OAction;
 use OsumiFramework\OFW\Web\ORequest;
 use OsumiFramework\App\Model\User;
-use OsumiFramework\App\Component\UserListComponent;
+use OsumiFramework\App\Component\Api\UserListComponent;
 
 #[OModuleAction(
 	url: '/get-users',
 	filters: ['login'],
-	services: ['web'],
-	components: ['api/user_list']
+	services: ['web']
 )]
 class getUsersAction extends OAction {
 	/**

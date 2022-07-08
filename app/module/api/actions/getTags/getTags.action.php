@@ -5,13 +5,12 @@ namespace OsumiFramework\App\Module\Action;
 use OsumiFramework\OFW\Routing\OModuleAction;
 use OsumiFramework\OFW\Routing\OAction;
 use OsumiFramework\OFW\Web\ORequest;
-use OsumiFramework\App\Component\TagListComponent;
+use OsumiFramework\App\Component\Api\TagListComponent;
 
 #[OModuleAction(
 	url: '/get-tags',
 	filters: ['login'],
-	services: ['web'],
-	components: ['api/tag_list']
+	services: ['web']
 )]
 class getTagsAction extends OAction {
 	/**

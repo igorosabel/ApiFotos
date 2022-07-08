@@ -6,12 +6,11 @@ use OsumiFramework\OFW\Routing\OModuleAction;
 use OsumiFramework\OFW\Routing\OAction;
 use OsumiFramework\OFW\Web\ORequest;
 use OsumiFramework\App\Model\Photo;
-use OsumiFramework\App\Component\PhotoItemComponent;
+use OsumiFramework\App\Component\Api\PhotoItemComponent;
 
 #[OModuleAction(
 	url: '/get-photo',
-	filters: ['login'],
-	components: ['api/photo_item']
+	filters: ['login']
 )]
 class getPhotoAction extends OAction {
 	/**

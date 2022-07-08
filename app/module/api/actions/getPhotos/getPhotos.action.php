@@ -5,13 +5,12 @@ namespace OsumiFramework\App\Module\Action;
 use OsumiFramework\OFW\Routing\OModuleAction;
 use OsumiFramework\OFW\Routing\OAction;
 use OsumiFramework\OFW\Web\ORequest;
-use OsumiFramework\App\Component\PhotoListComponent;
+use OsumiFramework\App\Component\Api\PhotoListComponent;
 
 #[OModuleAction(
 	url: '/get-photos',
-	filters: ['login'],
-	services: ['web'],
-	components: ['api/photo_list']
+	//filters: ['login'],
+	services: ['web']
 )]
 class getPhotosAction extends OAction {
 	/**
