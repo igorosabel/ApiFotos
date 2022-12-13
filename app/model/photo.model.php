@@ -3,42 +3,50 @@
 namespace OsumiFramework\App\Model;
 
 use OsumiFramework\OFW\DB\OModel;
+use OsumiFramework\OFW\DB\OModelGroup;
+use OsumiFramework\OFW\DB\OModelField;
 
 class Photo extends OModel {
 	/**
 	 * Configures current model object based on data-base table structure
 	 */
 	function __construct() {
-		$model = [
-			'id' => [
-				'type'    => OModel::PK,
-				'comment' => 'Id única de cada foto'
-			],
-			'id_user' => [
-				'type'     => OModel::NUM,
-				'comment'  => 'Id del usuario que añade la foto',
-				'nullable' => false,
-				'ref'      => 'user.id'
-			],
-			'when' => [
-				'type'     => OModel::DATE,
-				'comment'  => 'Fecha de la foto',
-				'nullable' => false
-			],
-			'exif' => [
-				'type'     => OModel::LONGTEXT,
-				'comment'  => 'Datos EXIF de la foto',
-				'nullable' => true
-			],
-			'created_at' => [
-				'type'    => OModel::CREATED,
-				'comment' => 'Fecha de creación del registro'
-			],
-			'updated_at' => [
-				'type'    => OModel::UPDATED,
-				'comment' => 'Fecha de última modificación del registro'
-			]
-		];
+		$model = new OModelGroup(
+			new OModelField(
+				name: 'id',
+				type: OMODEL_PK,
+				comment: 'Id única de cada foto'
+			),
+			new OModelField(
+				name: 'id_user',
+				type: OMODEL_NUM,
+				comment: 'Id del usuario que añade la foto',
+				nullable: false,
+				ref: 'user.id'
+			),
+			new OModelField(
+				name: 'when',
+				type: OMODEL_DATE,
+				comment: 'Fecha de la foto',
+				nullable: false
+			),
+			new OModelField(
+				name: 'exif',
+				type: OMODEL_LONGTEXT,
+				comment: 'Datos EXIF de la foto',
+				nullable: true
+			),
+			new OModelField(
+				name: 'created_at',
+				type: OMODEL_CREATED,
+				comment: 'Fecha de creación del registro'
+			),
+			new OModelField(
+				name: 'updated_at',
+				type: OMODEL_UPDATED,
+				comment: 'Fecha de última modificación del registro'
+			)
+		);
 
 		parent::load($model);
 	}

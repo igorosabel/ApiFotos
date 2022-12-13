@@ -3,38 +3,45 @@
 namespace OsumiFramework\App\Model;
 
 use OsumiFramework\OFW\DB\OModel;
+use OsumiFramework\OFW\DB\OModelGroup;
+use OsumiFramework\OFW\DB\OModelField;
 
 class Tag extends OModel {
 	/**
 	 * Configures current model object based on data-base table structure
 	 */
 	function __construct() {
-		$model = [
-			'id' => [
-				'type'    => OModel::PK,
-				'comment' => 'Id única para cada tag'
-			],
-			'tag' => [
-				'type'     => OModel::TEXT,
-				'size'     => 50,
-				'comment'  => 'Texto de la tag',
-				'nullable' => false
-			],
-			'slug' => [
-				'type'     => OModel::TEXT,
-				'size'     => 50,
-				'comment'  => 'Slug del texto de la tag',
-				'nullable' => false
-			],
-			'created_at' => [
-				'type'    => OModel::CREATED,
-				'comment' => 'Fecha de creación del registro'
-			],
-			'updated_at' => [
-				'type'    => OModel::UPDATED,
-				'comment' => 'Fecha de última modificación del registro'
-			]
-		];
+		$model = new OModelGroup(
+			new OModelField(
+				name: 'id',
+				type: OMODEL_PK,
+				comment: 'Id única para cada tag'
+			),
+			new OModelField(
+				name: 'tag',
+				type: OMODEL_TEXT,
+				size: 50,
+				comment: 'Texto de la tag',
+				nullable: false
+			),
+			new OModelField(
+				name: 'slug',
+				type: OMODEL_TEXT,
+				size: 50,
+				comment: 'Slug del texto de la tag',
+				nullable: false
+			),
+			new OModelField(
+				name: 'created_at',
+				type: OMODEL_CREATED,
+				comment: 'Fecha de creación del registro'
+			),
+			new OModelField(
+				name: 'updated_at',
+				type: OMODEL_UPDATED,
+				comment: 'Fecha de última modificación del registro'
+			)
+		);
 
 		parent::load($model);
 	}
