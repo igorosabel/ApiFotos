@@ -410,7 +410,7 @@ class OCore {
 	 * @return array List of component names
 	 */
 	public function getContentComponents(string $content): array {
-		$pattern = "/^\s?use OsumiFramework\\\App\\\Component\\\(.*?);$/m";
+		$pattern = "/use OsumiFramework\\\App\\\Component\\\(.*?);/m";
 		$result = preg_match_all($pattern, $content, $matches);
 		$ret = [];
 

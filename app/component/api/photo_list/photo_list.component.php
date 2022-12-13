@@ -4,4 +4,6 @@ namespace OsumiFramework\App\Component\Api;
 
 use OsumiFramework\OFW\Core\OComponent;
 
-class PhotoListComponent extends OComponent {}
+class PhotoListComponent extends OComponent {
+	private string $depends = 'api/photo_item';
+}

@@ -429,7 +429,7 @@ class OTools {
 		if ($model = opendir($core->config->getDir('app_model'))) {
 			while (false !== ($entry = readdir($model))) {
 				if ($entry != '.' && $entry != '..') {
-					$table = "\\OsumiFramework\\App\\Model\\".str_ireplace('.php','',$entry);
+					$table = "\\OsumiFramework\\App\\Model\\".self::underscoresToCamelCase(str_ireplace('.model.php','',$entry), true);
 					array_push($ret, new $table());
 				}
 			}
@@ -663,7 +663,7 @@ class OTools {
 			return $status;
 		}
 		$module_content = file_get_contents($module_file);
-		if (preg_match("/^\s+actions: \[(.*?)".$action."(.*?)\]$/", $module_content) == 1) {
+		if (preg_match("/^\s+actions: \[(.*?)".$action."(.*?)\],?$/", $module_content) == 1) {
 			$status['status'] = 'action-exists';
 			return $status;
 		}
@@ -708,7 +708,6 @@ class OTools {
 			$status['status'] = 'action-exists';
 			return $status;
 		}
-		mkdir($action_folder);
 		$action_file   = $action_folder.'/'.$action.'.action.php';
 		if (file_exists($action_file)) {
 			$status['status'] = 'action-exists';
@@ -725,7 +724,7 @@ class OTools {
 			$module_content = preg_replace("/actions: \[\]/i", "actions: ['".$action."']", $module_content);
 		}
 		else {
-			preg_match("/^\s+actions: \[(.*?)\]$/m", $module_content, $match);
+			preg_match("/actions: \[(.*?)\]/m", $module_content, $match);
 			$actions = explode(',', $match[1]);
 			for ($i = 0; $i < count($actions); $i++) {
 				$actions[$i] = trim($actions[$i]);
@@ -733,6 +732,9 @@ class OTools {
 			array_push($actions, "'".$action."'");
 			$module_content = preg_replace("/actions: \[(.*?)\]/i", "actions: [".implode(', ', $actions)."]", $module_content);
 		}
+
+		// Create action's folder
+		mkdir($action_folder);
 
 		// New action's content
 		$str_template = self::getMessage('TASK_ADD_ACTION_TEMPLATE', [$action]);
