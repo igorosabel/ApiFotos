@@ -1,7 +1,0 @@
-{
-  "status": "{{status}}",
-  "pages": {{pages}},
-  "list": [
-{{list}}
-  ]
-}
