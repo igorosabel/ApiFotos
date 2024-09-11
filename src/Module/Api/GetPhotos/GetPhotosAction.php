@@ -1,17 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\GetPhotos;
+namespace Osumi\OsumiFramework\App\Module\Api\GetPhotos;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Component\Model\PhotoList\PhotoListComponent;
 
-#[OModuleAction(
-	url: '/get-photos',
-	//filters: ['Login'],
-	services: ['Web']
-)]
 class GetPhotosAction extends OAction {
 	public string $status = 'ok';
 	public int $pages = 0;

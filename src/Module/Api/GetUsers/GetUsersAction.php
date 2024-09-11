@@ -1,18 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\GetUsers;
+namespace Osumi\OsumiFramework\App\Module\Api\GetUsers;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Component\Model\UserList\UserListComponent;
 
-#[OModuleAction(
-	url: '/get-users',
-	filters: ['Login'],
-	services: ['Web']
-)]
 class GetUsersAction extends OAction {
 	public string $status = 'ok';
 	public ?UserListComponent $list = null;

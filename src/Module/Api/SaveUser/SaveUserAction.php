@@ -1,16 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\SaveUser;
+namespace Osumi\OsumiFramework\App\Module\Api\SaveUser;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\App\DTO\UserSaveDTO;
 use Osumi\OsumiFramework\App\Model\User;
 
-#[OModuleAction(
-	url: '/save-user',
-	filters: ['Login']
-)]
 class SaveUserAction extends OAction {
 	public string $status = 'ok';
 

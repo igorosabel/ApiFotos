@@ -1,18 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\Upload;
+namespace Osumi\OsumiFramework\App\Module\Api\Upload;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Model\Photo;
 
-#[OModuleAction(
-	url: '/upload',
-	filters: ['Login'],
-	services: ['Web']
-)]
 class UploadAction extends OAction {
 	public string $status = 'ok';
 	public string | int $id = 'null';

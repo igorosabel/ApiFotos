@@ -1,15 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\HomeModule\Actions\Index;
+namespace Osumi\OsumiFramework\App\Module\Home\Index;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\Routing\OUrl;
 
-#[OModuleAction(
-	url: '/'
-)]
 class IndexAction extends OAction {
 	/**
 	 * Home pública

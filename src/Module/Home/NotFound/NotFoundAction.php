@@ -1,15 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\HomeModule\Actions\NotFound;
+namespace Osumi\OsumiFramework\App\Module\Home\NotFound;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\Routing\OUrl;
 
-#[OModuleAction(
-	url: '/not-found'
-)]
 class NotFoundAction extends OAction {
 	/**
 	 * Página de error 404

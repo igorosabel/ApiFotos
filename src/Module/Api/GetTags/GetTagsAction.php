@@ -1,17 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\ApiModule\Actions\GetTags;
+namespace Osumi\OsumiFramework\App\Module\Api\GetTags;
 
-use Osumi\OsumiFramework\Routing\OModuleAction;
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Component\Model\TagList\TagListComponent;
 
-#[OModuleAction(
-	url: '/get-tags',
-	filters: ['Login'],
-	services: ['Web']
-)]
 class GetTagsAction extends OAction {
 	public string $status = 'ok';
 	public ?TagListComponent $list = null;
