@@ -4,9 +4,16 @@ namespace Osumi\OsumiFramework\App\Module\Api\UpdateTags;
 
 use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
+use Osumi\OsumiFramework\App\Service\WebService;
 
 class UpdateTagsAction extends OAction {
+	private ?WebService $ws = null;
+
 	public string $status = 'ok';
+
+	public function __construct() {
+		$this->ws = inject(WebService);
+	}
 
 	/**
 	 * Función para actualizar las etiquetas de una serie de fotos
@@ -22,8 +29,8 @@ class UpdateTagsAction extends OAction {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
-			$this->service['Web']->updateTags($list, $tags);
+		if ($this->status === 'ok') {
+			$this->ws->updateTags($list, $tags);
 		}
 	}
 }

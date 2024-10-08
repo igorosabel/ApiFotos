@@ -6,10 +6,17 @@ use Osumi\OsumiFramework\Routing\OAction;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Model\Photo;
+use Osumi\OsumiFramework\App\Service\WebService;
 
 class UploadAction extends OAction {
+	private ?WebService $ws = null;
+
 	public string $status = 'ok';
 	public string | int $id = 'null';
+
+	public function __construct() {
+		$this->ws = inject(WebService);
+	}
 
 	/**
 	 * Función para añadir una nueva foto
@@ -22,11 +29,11 @@ class UploadAction extends OAction {
 		$id_user = $req->getParamInt('id');
 		$filter = $req->getFilter('Login');
 
-		if (is_null($photo) || is_null($id_user) || $filter['status'] == 'error') {
+		if (is_null($photo) || is_null($id_user) || $filter['status'] === 'error') {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
+		if ($this->status === 'ok') {
 			$user = new User();
 			if ($user->checkAdmin($filter['id'])) {
 				$this->getLog()->info(var_export($photo['date'], true));
@@ -39,12 +46,12 @@ class UploadAction extends OAction {
 
 				$this->id = $p->get('id');
 
-				$this->service['Web']->saveNewImage($photo['src'], $this->id);
+				$this->ws->saveNewImage($photo['src'], $this->id);
 
-				if ( $photo['exif'] != '' && $photo['exif'] != 'false') {
+				if ( $photo['exif'] !== '' && $photo['exif'] !== 'false') {
 					$exif_data = json_decode($photo['exif'], true);
-					if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] != 1) {
-						$this->service['Web']->rotateImage($p, $exif_data['Orientation']);
+					if (array_key_exists('Orientation', $exif_data) && $exif_data['Orientation'] !== 1) {
+						$this->ws->rotateImage($p, $exif_data['Orientation']);
 					}
 				}
 			}
