@@ -12,7 +12,7 @@ class UpdateTagsAction extends OAction {
 	public string $status = 'ok';
 
 	public function __construct() {
-		$this->ws = inject(WebService);
+		$this->ws = inject(WebService::class);
 	}
 
 	/**

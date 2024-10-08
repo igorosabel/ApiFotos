@@ -15,7 +15,7 @@ class UploadAction extends OAction {
 	public string | int $id = 'null';
 
 	public function __construct() {
-		$this->ws = inject(WebService);
+		$this->ws = inject(WebService::class);
 	}
 
 	/**

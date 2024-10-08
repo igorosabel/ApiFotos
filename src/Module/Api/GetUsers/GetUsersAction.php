@@ -15,7 +15,7 @@ class GetUsersAction extends OAction {
 	public ?UserListComponent $list = null;
 
 	public function __construct() {
-		$this->ws = inject(WebService);
+		$this->ws = inject(WebService::class);
 		$this->list = new UserListComponent(['list' => []]);
 	}
 

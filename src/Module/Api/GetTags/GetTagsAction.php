@@ -14,7 +14,7 @@ class GetTagsAction extends OAction {
 	public ?TagListComponent $list = null;
 
 	public function __construct() {
-		$this->ws = inject(WebService);
+		$this->ws = inject(WebService::class);
 		$this->list = new TagListComponent(['list' => []]);
 	}
 
