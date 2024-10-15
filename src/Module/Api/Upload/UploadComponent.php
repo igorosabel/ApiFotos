@@ -2,19 +2,20 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\Upload;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Model\Photo;
 use Osumi\OsumiFramework\App\Service\WebService;
 
-class UploadAction extends OAction {
+class UploadComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
 	public string | int $id = 'null';
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
 	}
 

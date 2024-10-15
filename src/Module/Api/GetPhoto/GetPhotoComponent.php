@@ -2,12 +2,12 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\GetPhoto;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\Photo;
 use Osumi\OsumiFramework\App\Component\Model\Photo\PhotoComponent;
 
-class GetPhotoAction extends OAction {
+class GetPhotoComponent extends OComponent {
 	public string $status = 'ok';
 	public ?PhotoComponent $photo = null;
 
@@ -19,7 +19,7 @@ class GetPhotoAction extends OAction {
 	 */
 	public function run(ORequest $req):void {
 		$id = $req->getParamInt('id');
-		$this->photo = new PhotoComponent(['Photo' => null]);
+		$this->photo = new PhotoComponent();
 
 		if (is_null($id)) {
 			$this->status = 'error';
@@ -28,7 +28,7 @@ class GetPhotoAction extends OAction {
 		if ($this->status == 'ok') {
 			$p = new Photo();
 			if ($p->find(['id' => $id])) {
-				$this->photo->setValue('Photo', $p);
+				$this->photo->photo = $p;
 			}
 			else {
 				$this->status = 'error';

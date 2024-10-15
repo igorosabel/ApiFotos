@@ -2,11 +2,11 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\SaveUser;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\App\DTO\UserSaveDTO;
 use Osumi\OsumiFramework\App\Model\User;
 
-class SaveUserAction extends OAction {
+class SaveUserComponent extends OComponent {
 	public string $status = 'ok';
 
 	/**

@@ -3,8 +3,8 @@
 namespace Osumi\OsumiFramework\Routes;
 
 use Osumi\OsumiFramework\Routing\ORoute;
-use Osumi\OsumiFramework\App\Module\Home\Index\IndexAction;
-use Osumi\OsumiFramework\App\Module\Home\NotFound\NotFoundAction;
+use Osumi\OsumiFramework\App\Module\Home\Index\IndexComponent;
+use Osumi\OsumiFramework\App\Module\Home\NotFound\NotFoundComponent;
 
-ORoute::get('/',          IndexAction::class);
-ORoute::get('/not-found', NotFoundAction::class);
+ORoute::get('/',          IndexComponent::class);
+ORoute::get('/not-found', NotFoundComponent::class);

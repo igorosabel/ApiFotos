@@ -2,21 +2,22 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\GetUsers;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Model\User;
 use Osumi\OsumiFramework\App\Service\WebService;
 use Osumi\OsumiFramework\App\Component\Model\UserList\UserListComponent;
 
-class GetUsersAction extends OAction {
+class GetUsersComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
 	public ?UserListComponent $list = null;
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
-		$this->list = new UserListComponent(['list' => []]);
+		$this->list = new UserListComponent();
 	}
 
 	/**
@@ -36,7 +37,7 @@ class GetUsersAction extends OAction {
 			$user = new User();
 			if ($user->checkAdmin($filter['id'])) {
 				$user_list = $this->ws->getUserList();
-				$this->list->setValue('list', $user_list);
+				$this->list->list = $user_list;
 			}
 			else {
 				$this->status = 'error';

@@ -1,17 +1,17 @@
-<?php if (is_null($values['Photo'])): ?>
+<?php if (is_null($photo)): ?>
 null
 <?php else: ?>
 {
-	"id": <?php echo $values['Photo']->get('id') ?>,
-	"thumb": "<?php echo $values['Photo']->getThumbUrl() ?>",
-	"img": "<?php echo $values['Photo']->getPhotoUrl() ?>",
-	"date": <?php echo strtotime($values['Photo']->get('when', 'j F Y H:i:s')) ?>,
+	"id": <?php echo $photo->get('id') ?>,
+	"thumb": "<?php echo $photo->getThumbUrl() ?>",
+	"img": "<?php echo $photo->getPhotoUrl() ?>",
+	"date": <?php echo strtotime($photo->get('when', 'j F Y H:i:s')) ?>,
 	"tags": [
-		<?php foreach ($values['Photo']->getTags() as $j => $tag): ?>
+		<?php foreach ($photo->getTags() as $j => $tag): ?>
 			{
 				"id": <?php echo $tag->get('id') ?>,
 				"tag": "<?php echo urlencode($tag->get('tag')) ?>"
-			}<?php if ($j<count($values['Photo']->getTags()) -1): ?>,<?php endif ?>
+			}<?php if ($j<count($photo->getTags()) -1): ?>,<?php endif ?>
 		<?php endforeach ?>
 		]
 }

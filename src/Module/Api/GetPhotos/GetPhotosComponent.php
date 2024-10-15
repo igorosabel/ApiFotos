@@ -2,12 +2,12 @@
 
 namespace Osumi\OsumiFramework\App\Module\Api\GetPhotos;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\App\Service\WebService;
 use Osumi\OsumiFramework\App\Component\Model\PhotoList\PhotoListComponent;
 
-class GetPhotosAction extends OAction {
+class GetPhotosComponent extends OComponent {
 	private ?WebService $ws = null;
 
 	public string $status = 'ok';
@@ -15,8 +15,9 @@ class GetPhotosAction extends OAction {
 	public ?PhotoListComponent $list = null;
 
 	public function __construct() {
+    parent::__construct();
 		$this->ws = inject(WebService::class);
-		$this->list = new PhotoListComponent(['list' => []]);
+		$this->list = new PhotoListComponent();
 	}
 
 	/**
@@ -35,7 +36,7 @@ class GetPhotosAction extends OAction {
 		if ($this->status === 'ok') {
 			$this->pages = $this->ws->getPhotosNumPages();
 			$photo_list = $this->ws->getPhotosList($page);
-			$this->list->setValue('list', $photo_list);
+			$this->list->list = $photo_list;
 		}
 	}
 }
