@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace Osumi\OsumiFramework\App\Module\Home\Index;
+namespace Osumi\OsumiFramework\App\Module\Home\NotFound;
 
-use Osumi\OsumiFramework\Routing\OAction;
+use Osumi\OsumiFramework\Core\OComponent;
 use Osumi\OsumiFramework\Web\ORequest;
 use Osumi\OsumiFramework\Routing\OUrl;
 
-class IndexAction extends OAction {
+class NotFoundComponent extends OComponent {
 	/**
-	 * Home pública
+	 * Página de error 404
 	 *
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		OUrl::goToUrl('https://fotos.osumi.es');
 	}
 }

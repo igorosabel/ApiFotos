@@ -26,7 +26,7 @@ class GetUsersComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		$filter = $req->getFilter('Login');
 
 		if ($filter['status'] === 'error') {
@@ -34,7 +34,7 @@ class GetUsersComponent extends OComponent {
 		}
 
 		if ($this->status ===  'ok') {
-			$user = new User();
+			$user = User::create();
 			if ($user->checkAdmin($filter['id'])) {
 				$user_list = $this->ws->getUserList();
 				$this->list->list = $user_list;

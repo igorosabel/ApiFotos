@@ -3,7 +3,7 @@
 namespace Osumi\OsumiFramework\App\Service;
 
 use Osumi\OsumiFramework\Core\OService;
-use Osumi\OsumiFramework\DB\ODB;
+use Osumi\OsumiFramework\ORM\ODB;
 use Osumi\OsumiFramework\Tools\OTools;
 use Osumi\OsumiFramework\Plugins\OImage;
 use Osumi\OsumiFramework\App\Model\Photo;
@@ -11,13 +11,6 @@ use Osumi\OsumiFramework\App\Model\Tag;
 use Osumi\OsumiFramework\App\Model\User;
 
 class WebService extends OService {
-	/**
-	 * Load service tools
-	 */
-	function __construct() {
-		$this->loadService();
-	}
-
 	/**
 	 * Función para obtener la lista de fotos de una página indicada
 	 *
@@ -30,15 +23,14 @@ class WebService extends OService {
 		$db = new ODB();
 		$lim = ($page - 1) * $this->getConfig()->getExtra('photos_per_page');
 
-		$sql = "SELECT * FROM `photo` ORDER BY `when` DESC LIMIT ".$lim.",".$this->getConfig()->getExtra('photos_per_page');
+		$sql = "SELECT * FROM `photo` ORDER BY `when` DESC LIMIT " . $lim . "," . $this->getConfig()->getExtra('photos_per_page');
 		$db->query($sql);
 		$ret = [];
 
 		while ($res = $db->next()) {
-			$photo = new Photo();
-			$photo->update($res);
+			$photo = Photo::from($res);
 
-			array_push($ret, $photo);
+			$ret[] = $photo;
 		}
 
 		return $ret;
@@ -57,7 +49,7 @@ class WebService extends OService {
 		$db->query($sql);
 		$res = $db->next();
 
-		return intval( ceil( (int)$res['num'] / $this->getConfig()->getExtra('photos_per_page')) );
+		return intval( ceil( (int) $res['num'] / $this->getConfig()->getExtra('photos_per_page')) );
 	}
 
 	/**
@@ -72,10 +64,8 @@ class WebService extends OService {
 		$ret = [];
 
 		while ($res = $db->next()) {
-			$tag = new Tag();
-			$tag->update($res);
-
-			array_push($ret, $tag);
+			$tag = Tag::from($res);
+			$ret[] = $tag;
 		}
 
 		return $ret;
@@ -110,7 +100,7 @@ class WebService extends OService {
 	 * @return string Devuelve la ruta completa a la nueva imagen
 	 */
 	public function saveImage(string $dir, string $base64_string, int $id, string $ext): string {
-		$ruta = $dir.$id.'.'.$ext;
+		$ruta = $dir . $id . '.' . $ext;
 
 		if (file_exists($ruta)) {
 			unlink($ruta);
@@ -145,8 +135,8 @@ class WebService extends OService {
 			$im->save($ruta, $im->getImageType());
 		}
 
-		$thumb_route  = $this->getConfig()->getExtra('thumb').$id.'.webp';
-		$photo_route = $this->getConfig()->getExtra('photo').$id.'.webp';
+		$thumb_route  = $this->getConfig()->getExtra('thumb') . $id . '.webp';
+		$photo_route = $this->getConfig()->getExtra('photo') . $id . '.webp';
 
 		// Guardo la imagen ya modificada como WebP
 		$im->save($photo_route, IMAGETYPE_WEBP);
@@ -175,24 +165,23 @@ class WebService extends OService {
 		$tag_list = explode(',', $tags);
 		foreach ($tag_list as $tag_item) {
 			$tag_item = trim($tag_item);
-			$tag = new Tag();
 
-			$sql = "SELECT * FROM `tag` WHERE `slug` LIKE '%".OTools::slugify($tag_item)."%'";
+			$sql = "SELECT * FROM `tag` WHERE `slug` LIKE '%" . OTools::slugify($tag_item) . "%'";
 			$db->query($sql);
 			if ($res = $db->next()) {
-				$tag->update($res);
+				$tag = Tag::from($res);
 			}
 			else {
-				$tag->set('tag', $tag_item);
-				$tag->set('slug', OTools::slugify($tag_item));
+				$tag = Tag::create();
+				$tag->tag = $tag_item;
+				$tag->slug = OTools::slugify($tag_item);
 				$tag->save();
 			}
-			array_push($photo_tags, $tag);
+			$photo_tags[] = $tag;
 		}
 
 		foreach  ($list as $item) {
-			$photo = new Photo();
-			$photo->find(['id' => $item]);
+			$photo = Photo::findOne(['id' => $item]);
 			$photo->updateTags($photo_tags);
 		}
 	}
@@ -241,9 +230,8 @@ class WebService extends OService {
 		$db->query($sql);
 
 		while ($res = $db->next()) {
-			$user = new User();
-			$user->update($res);
-			array_push($list, $user);
+			$user = User::from($res);
+			$list[] = $user;
 		}
 
 		return $list;

@@ -2,54 +2,49 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
+use Osumi\OsumiFramework\ORM\ODB;
 
 class Photo extends OModel {
-	/**
-	 * Configures current model object based on data-base table structure
-	 */
-	function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id',
-				type: OMODEL_PK,
-				comment: 'Id única de cada foto'
-			),
-			new OModelField(
-				name: 'id_user',
-				type: OMODEL_NUM,
-				comment: 'Id del usuario que añade la foto',
-				nullable: false,
-				ref: 'user.id'
-			),
-			new OModelField(
-				name: 'when',
-				type: OMODEL_DATE,
-				comment: 'Fecha de la foto',
-				nullable: false
-			),
-			new OModelField(
-				name: 'exif',
-				type: OMODEL_LONGTEXT,
-				comment: 'Datos EXIF de la foto',
-				nullable: true
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id única de cada foto'
+	)]
+	public ?int $id;
 
-		parent::load($model);
-	}
+	#[OField(
+	  comment: 'Id del usuario que añade la foto',
+	  nullable: false,
+	  ref: 'user.id'
+	)]
+	public ?int $id_user;
+
+	#[OField(
+	  comment: 'Fecha de la foto',
+	  nullable: false,
+	  type: OField::DATE
+	)]
+	public ?string $when;
+
+	#[OField(
+	  comment: 'Datos EXIF de la foto',
+	  nullable: true,
+	  type: OField::LONGTEXT
+	)]
+	public ?string $exif;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
 
 	/**
 	 * Obtiene la ruta al thumbnail
@@ -58,7 +53,7 @@ class Photo extends OModel {
 	 */
 	public function getThumbUrl(): string {
 		global $core;
-		return $core->config->getUrl('base').'thumb/'.$this->get('id').'.webp';
+		return $core->config->getUrl('base') . 'thumb/' . $this->id . '.webp';
 	}
 
 	/**
@@ -68,7 +63,7 @@ class Photo extends OModel {
 	 */
 	public function getPhotoUrl(): string {
 		global $core;
-		return $core->config->getUrl('base').'photo/'.$this->get('id').'.webp';
+		return $core->config->getUrl('base') . 'photo/' . $this->id . '.webp';
 	}
 
 	/**
@@ -78,7 +73,7 @@ class Photo extends OModel {
 	 */
 	public function getThumbRoute(): string {
 		global $core;
-		return $core->config->getExtra('thumb').$this->get('id').'.webp';
+		return $core->config->getExtra('thumb') . $this->id . '.webp';
 	}
 
 	/**
@@ -88,7 +83,7 @@ class Photo extends OModel {
 	 */
 	public function getPhotoRoute(): string {
 		global $core;
-		return $core->config->getExtra('photo').$this->get('id').'.webp';
+		return $core->config->getExtra('photo') . $this->id . '.webp';
 	}
 
 	/**
@@ -97,8 +92,8 @@ class Photo extends OModel {
 	 * @return void
 	 */
 	public function deleteFull(): void{
-		$thumb_route  = $this->getThumbRoute();
-		$photo_route  = $this->getPhotoRoute();
+		$thumb_route = $this->getThumbRoute();
+		$photo_route = $this->getPhotoRoute();
 
 		if (file_exists($thumb_route)) {
 			unlink($thumb_route);
@@ -110,6 +105,9 @@ class Photo extends OModel {
 		$this->delete();
 	}
 
+	/**
+	 * Lista de tags de una foto
+	 */
 	private ?array $tags = null;
 
 	/**
@@ -118,7 +116,7 @@ class Photo extends OModel {
 	 * @return array Lista de tags
 	 */
 	public function getTags(): array {
-		if (is_null($this->tags)){
+		if (is_null($this->tags)) {
 			$this->loadTags();
 		}
 		return $this->tags;
@@ -141,15 +139,15 @@ class Photo extends OModel {
 	 * @return void
 	 */
 	public function loadTags(): void {
+		$db = new ODB();
 		$sql = "SELECT * FROM `tag` WHERE `id` IN (SELECT `id_tag` FROM `photo_tag` WHERE `id_photo` = ?) ORDER BY `tag` ASC";
-		$this->db->query($sql, [$this->get('id')]);
+		$db->query($sql, [$this->id]);
 		$list = [];
 
-		while ($res=$this->db->next()) {
-			$tag = new Tag();
-			$tag->update($res);
+		while ($res = $db->next()) {
+			$tag = Tag::from($res);
 
-			array_push($list, $tag);
+			$list[] = $tag;
 		}
 
 		$this->setTags($list);
@@ -163,13 +161,14 @@ class Photo extends OModel {
 	 * @return void
 	 */
 	public function updateTags(array $tags): void {
+		$db = new ODB();
 		$sql = "DELETE FROM `photo_tag` WHERE `id_photo` = ?";
-		$this->db->query($sql, [$this->get('id')]);
+		$db->query($sql, [$this->id]);
 
 		foreach  ($tags as $tag) {
-			$photo_tag = new PhotoTag();
-			$photo_tag->set('id_photo', $this->get('id'));
-			$photo_tag->set('id_tag', $tag->get('id'));
+			$photo_tag = PhotoTag::create();
+			$photo_tag->id_photo = $this->id;
+			$photo_tag->id_tag   = $tag->id;
 			$photo_tag->save();
 		}
 	}

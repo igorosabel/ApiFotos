@@ -26,7 +26,7 @@ class GetPhotosComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		$page = $req->getParamInt('page');
 
 		if (is_null($page)) {

@@ -25,7 +25,7 @@ class UploadComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		$photo = $req->getParam('data');
 		$id_user = $req->getParamInt('id');
 		$filter = $req->getFilter('Login');
@@ -35,17 +35,17 @@ class UploadComponent extends OComponent {
 		}
 
 		if ($this->status === 'ok') {
-			$user = new User();
+			$user = User::create();
 			if ($user->checkAdmin($filter['id'])) {
 				$this->getLog()->info(var_export($photo['date'], true));
 				$this->getLog()->info(var_export($photo['exif'], true));
-				$p = new Photo();
-				$p->set('id_user', $id_user);
-				$p->set('when', $photo['date']);
-				$p->set('exif', $photo['exif']);
+				$p = Photo::create();
+				$p->id_user = $id_user;
+				$p->when    = $photo['date'];
+				$p->exif    = $photo['exif'];
 				$p->save();
 
-				$this->id = $p->get('id');
+				$this->id = $p->id;
 
 				$this->ws->saveNewImage($photo['src'], $this->id);
 

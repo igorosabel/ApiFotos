@@ -25,7 +25,7 @@ class GetTagsComponent extends OComponent {
 	 * @param ORequest $req Request object with method, headers, parameters and filters used
 	 * @return void
 	 */
-	public function run(ORequest $req):void {
+	public function run(ORequest $req): void {
 		if ($this->status === 'ok') {
 			$tag_list = $this->ws->getTagList();
 			$this->list->list = $tag_list;

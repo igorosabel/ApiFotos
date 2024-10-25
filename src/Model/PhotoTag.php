@@ -2,40 +2,30 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
 
 class PhotoTag extends OModel{
-	/**
-	 * Configures current model object based on data-base table structure
-	 */
-	 function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id_photo',
-				type: OMODEL_PK,
-				comment: 'Id de la foto',
-				incr: false
-			),
-			new OModelField(
-				name: 'id_tag',
-				type: OMODEL_PK,
-				comment: 'Id de la tag',
-				incr: false
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id de la foto'
+	)]
+	public ?int $id_photo;
 
-		parent::load($model);
-	}
+	#[OPK(
+	  comment: 'Id de la tag'
+	)]
+	public ?int $id_tag;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
 }

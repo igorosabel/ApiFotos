@@ -2,57 +2,53 @@
 
 namespace Osumi\OsumiFramework\App\Model;
 
-use Osumi\OsumiFramework\DB\OModel;
-use Osumi\OsumiFramework\DB\OModelGroup;
-use Osumi\OsumiFramework\DB\OModelField;
+use Osumi\OsumiFramework\ORM\OModel;
+use Osumi\OsumiFramework\ORM\OPK;
+use Osumi\OsumiFramework\ORM\OField;
+use Osumi\OsumiFramework\ORM\OCreatedAt;
+use Osumi\OsumiFramework\ORM\OUpdatedAt;
+use Osumi\OsumiFramework\ORM\ODB;
 
 class Tag extends OModel {
-	/**
-	 * Configures current model object based on data-base table structure
-	 */
-	function __construct() {
-		$model = new OModelGroup(
-			new OModelField(
-				name: 'id',
-				type: OMODEL_PK,
-				comment: 'Id única para cada tag'
-			),
-			new OModelField(
-				name: 'tag',
-				type: OMODEL_TEXT,
-				size: 50,
-				comment: 'Texto de la tag',
-				nullable: false
-			),
-			new OModelField(
-				name: 'slug',
-				type: OMODEL_TEXT,
-				size: 50,
-				comment: 'Slug del texto de la tag',
-				nullable: false
-			),
-			new OModelField(
-				name: 'created_at',
-				type: OMODEL_CREATED,
-				comment: 'Fecha de creación del registro'
-			),
-			new OModelField(
-				name: 'updated_at',
-				type: OMODEL_UPDATED,
-				comment: 'Fecha de última modificación del registro'
-			)
-		);
+	#[OPK(
+	  comment: 'Id única para cada tag'
+	)]
+	public ?int $id;
 
-		parent::load($model);
-	}
+	#[OField(
+	  comment: 'Texto de la tag',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $tag;
+
+	#[OField(
+	  comment: 'Slug del texto de la tag',
+	  nullable: false,
+	  max: 50
+	)]
+	public ?string $slug;
+
+	#[OCreatedAt(
+	  comment: 'Fecha de creación del registro'
+	)]
+	public ?string $created_at;
+
+	#[OUpdatedAt(
+	  comment: 'Fecha de última modificación del registro'
+	)]
+	public ?string $updated_at;
 
 	/**
 	 * Devuelve el texto de la tag
 	 */
 	public function __toString() {
-		return $this->get('tag');
+		return $this->tag;
 	}
 
+	/**
+	 * Lista de fotos que tienen una tag
+	 */
 	private ?array $photos = null;
 
 	/**
@@ -61,7 +57,7 @@ class Tag extends OModel {
 	 * @return array Lista de fotos
 	 */
 	public function getPhotos(): array {
-		if (is_null($this->photos)){
+		if (is_null($this->photos)) {
 			$this->loadPhotos();
 		}
 		return $this->photos;
@@ -84,15 +80,15 @@ class Tag extends OModel {
 	 * @return void
 	 */
 	public function loadPhotos(): void {
+		$db = new ODB();
 		$sql = "SELECT * FROM `photo` WHERE `id` IN (SELECT `id_photo` FROM `photo_tag` WHERE `id_tag` = ?) ORDER BY `updated_at` DESC";
-		$this->db->query($sql, [$this->get('id')]);
+		$this->db->query($sql, [$this->id]);
 		$list = [];
 
-		while ($res=$this->db->next()) {
-			$photo = new Photo();
-			$photo->update($res);
+		while ($res = $this->db->next()) {
+			$photo = Photo::from($res);
 
-			array_push($list, $photo);
+			$list[] = $photo;
 		}
 
 		$this->setPhotos($list);

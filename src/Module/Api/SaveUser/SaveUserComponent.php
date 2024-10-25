@@ -15,23 +15,23 @@ class SaveUserComponent extends OComponent {
 	 * @param UserSaveDTO $data Datos del usuario a guardar
 	 * @return void
 	 */
-	public function run(UserSaveDTO $data):void {
+	public function run(UserSaveDTO $data): void {
 		if (!$data->isValid()) {
 			$this->status = 'error';
 		}
 
-		if ($this->status == 'ok') {
-			$user = new User();
+		if ($this->status === 'ok') {
+			$user = User::create();
 			if ($user->checkAdmin($data->getIdToken())) {
-				$u = new User();
-				if ($data->getId() != -1) {
-					$u->find(['id' => $data->getId()]);
+				$u = User::create();
+				if ($data->getId() !== -1) {
+					$u = User::findOne(['id' => $data->getId()]);
 				}
-				$u->set('username', $data->getUsername());
-				$u->set('name', $data->getName());
-				$u->set('is_admin', $data->getIsAdmin());
-				if ($data->getPass() != '') {
-					$u->set('pass', password_hash($data->getPass(), PASSWORD_BCRYPT));
+				$u->username = $data->getUsername();
+				$u->name     = $data->getName();
+				$u->is_admin = $data->getIsAdmin();
+				if ($data->getPass() !== '') {
+					$u->pass = password_hash($data->getPass(), PASSWORD_BCRYPT);
 				}
 				$u->save();
 			}
