@@ -19,21 +19,11 @@ class WebService extends OService {
 	 * @return array Lista de fotos
 	 */
 	public function getPhotosList(int $page): array {
-		$ret = [];
-		$db = new ODB();
 		$lim = ($page - 1) * $this->getConfig()->getExtra('photos_per_page');
-
-		$sql = "SELECT * FROM `photo` ORDER BY `when` DESC LIMIT " . $lim . "," . $this->getConfig()->getExtra('photos_per_page');
-		$db->query($sql);
-		$ret = [];
-
-		while ($res = $db->next()) {
-			$photo = Photo::from($res);
-
-			$ret[] = $photo;
-		}
-
-		return $ret;
+		return Photo::all([
+			'order_by' => 'when#desc',
+			'limit' => $lim . "#" . $this->getConfig()->getExtra('photos_per_page')
+		]);
 	}
 
 	/**
@@ -42,33 +32,14 @@ class WebService extends OService {
 	 * @return int Número de páginas de resultados
 	 */
 	public function getPhotosNumPages(): int {
-		$db = new ODB();
-		$c  = $this->getConfig();
-
-		$sql = "SELECT COUNT(*) AS `num` FROM `photo`";
-		$db->query($sql);
-		$res = $db->next();
-
-		return intval( ceil( (int) $res['num'] / $this->getConfig()->getExtra('photos_per_page')) );
+		return intval( ceil( Photo::count() / $this->getConfig()->getExtra('photos_per_page')) );
 	}
 
 	/**
 	 * Obtiene la lista completa de tags
 	 */
 	public function getTagList(): array {
-		$ret = [];
-		$db = new ODB();
-
-		$sql = "SELECT * FROM `tag` ORDER BY `tag` ASC";
-		$db->query($sql);
-		$ret = [];
-
-		while ($res = $db->next()) {
-			$tag = Tag::from($res);
-			$ret[] = $tag;
-		}
-
-		return $ret;
+		return Tag::all(['order_by' => 'tag#asc']);
 	}
 
 	/**
@@ -223,17 +194,6 @@ class WebService extends OService {
 	 * @return array Lista de usuarios
 	 */
 	public function getUserList(): array {
-		$db = new ODB();
-		$list = [];
-
-		$sql = "SELECT * FROM `user` ORDER BY `id`";
-		$db->query($sql);
-
-		while ($res = $db->next()) {
-			$user = User::from($res);
-			$list[] = $user;
-		}
-
-		return $list;
+		return User::all(['order_by' => 'id']);
 	}
 }
