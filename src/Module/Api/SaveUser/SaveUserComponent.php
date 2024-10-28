@@ -22,16 +22,16 @@ class SaveUserComponent extends OComponent {
 
 		if ($this->status === 'ok') {
 			$user = User::create();
-			if ($user->checkAdmin($data->getIdToken())) {
+			if ($user->checkAdmin($data->id_token)) {
 				$u = User::create();
-				if ($data->getId() !== -1) {
-					$u = User::findOne(['id' => $data->getId()]);
+				if ($data->id !== -1) {
+					$u = User::findOne(['id' => $data->id]);
 				}
-				$u->username = $data->getUsername();
-				$u->name     = $data->getName();
-				$u->is_admin = $data->getIsAdmin();
-				if ($data->getPass() !== '') {
-					$u->pass = password_hash($data->getPass(), PASSWORD_BCRYPT);
+				$u->username = $data->username;
+				$u->name     = $data->name;
+				$u->is_admin = $data->is_admin;
+				if ($data->pass !== '') {
+					$u->pass = password_hash($data->pass, PASSWORD_BCRYPT);
 				}
 				$u->save();
 			}
