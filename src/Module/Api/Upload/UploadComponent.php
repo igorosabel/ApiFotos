@@ -28,7 +28,7 @@ class UploadComponent extends OComponent {
 	public function run(ORequest $req): void {
 		$photo = $req->getParam('data');
 		$id_user = $req->getParamInt('id');
-		$filter = $req->getFilter('Login');
+		$filter = $req->getMiddleware('Login');
 
 		if (is_null($photo) || is_null($id_user) || $filter['status'] === 'error') {
 			$this->status = 'error';

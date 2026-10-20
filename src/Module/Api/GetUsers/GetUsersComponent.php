@@ -27,7 +27,7 @@ class GetUsersComponent extends OComponent {
 	 * @return void
 	 */
 	public function run(ORequest $req): void {
-		$filter = $req->getFilter('Login');
+		$filter = $req->getMiddleware('Login');
 
 		if ($filter['status'] === 'error') {
 			$this->status = 'error';

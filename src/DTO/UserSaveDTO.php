@@ -30,7 +30,7 @@ class UserSaveDTO implements ODTO{
 		$this->pass     = $req->getParamString('pass');
 		$this->is_admin = $req->getParamBool('isAdmin');
 
-		$filter = $req->getFilter('Login');
+		$filter = $req->getMiddleware('Login');
 		if ($filter['status'] !== 'error') {
 			$this->id_token = $filter['id'];
 		}

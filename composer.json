@@ -1,9 +1,8 @@
 {
-  "name": "osumionline/new",
-  "description": "Aplicación esqueleto basada en Osumi Framework.",
+  "name": "igorosabel/api-fotos",
+  "description": "API para la aplicación Fotos.",
   "type": "project",
-  "keywords": ["osumi", "framework", "skeleton"],
-  "homepage": "https://github.com/osumionline/new",
+  "homepage": "https://github.com/igorosabel/fotos",
   "license": "MIT",
   "authors": [
     {
@@ -13,8 +12,8 @@
     }
   ],
   "require": {
-    "php": ">=8.2",
-    "osumionline/framework": "^9.0",
+    "php": ">=8.5",
+    "osumionline/framework": "^9.12.1",
     "osumionline/plugin-image": "^3.0",
     "osumionline/plugin-token": "^3.0"
   },
@@ -25,7 +24,10 @@
   },
   "config": {
     "preferred-install": "dist",
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "osumionline/plugin-updater": true
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true

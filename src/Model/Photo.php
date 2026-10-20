@@ -25,7 +25,7 @@ class Photo extends OModel {
 	#[OField(
 	  comment: 'Fecha de la foto',
 	  nullable: false,
-	  type: OField::DATE
+	  type: OField::DATETIME
 	)]
 	public ?string $when;
 
